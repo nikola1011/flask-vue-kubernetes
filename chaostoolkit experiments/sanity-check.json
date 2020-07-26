@@ -1,0 +1,70 @@
+{
+    "version": "1.0.0",
+    "title": "Sanity check",
+    "description": "N/A",
+    "tags": [],
+    "steady-state-hypothesis": {
+        "title": "All microservices healthy",
+        "probes": [
+            {
+                "type": "probe",
+                "name": "all_microservices_healthy",
+                "provider": {
+                    "type": "python",
+                    "module": "chaosk8s.probes",
+                    "func": "all_microservices_healthy",
+                    "arguments": {
+                        "ns": "default"
+                    }
+                },
+                "tolerance": true
+            },
+            {
+                "type": "probe",
+                "name": "pods_in_phase",
+                "provider": {
+                    "type": "python",
+                    "module": "chaosk8s.pod.probes",
+                    "func": "pods_in_phase",
+                    "arguments": {
+                        "label_selector": "app=flask",
+                        "phase": "Running",
+                        "ns": "default"
+                    }
+                },
+                "tolerance": true
+            },
+            {
+                "type": "probe",
+                "name": "pods_in_phase",
+                "provider": {
+                    "type": "python",
+                    "module": "chaosk8s.pod.probes",
+                    "func": "pods_in_phase",
+                    "arguments": {
+                        "label_selector": "app=vue",
+                        "phase": "Running",
+                        "ns": "default"
+                    }
+                },
+                "tolerance": true
+            },
+            {
+                "type": "probe",
+                "name": "pods_in_phase",
+                "provider": {
+                    "type": "python",
+                    "module": "chaosk8s.pod.probes",
+                    "func": "pods_in_phase",
+                    "arguments": {
+                        "label_selector": "service=postgres",
+                        "phase": "Running",
+                        "ns": "default"
+                    }
+                },
+                "tolerance": true
+            }
+        ]
+    },
+    "method": []
+}
