@@ -32,9 +32,10 @@ def all_books():
 def ping():
     return jsonify({
         'status': 'success',
-        'message': 'pong!',
-        'container_id': os.uname()[1]
+        'message': 'pong!'
     })
+        #'container_id': os.uname()[1]
+    #})
 
 
 @books_blueprint.route('/books/<book_id>', methods=['PUT', 'DELETE'])
