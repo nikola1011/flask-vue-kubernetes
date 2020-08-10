@@ -1,0 +1,49 @@
+{
+    "version": "1.0.0",
+    "title": "Concurent requests",
+    "description": "N/A",
+    "tags": [],
+    "steady-state-hypothesis": {
+        "title": "Check if application is running",
+        "probes": [
+            {
+                "type": "probe",
+                "name": "all_microservices_healthy",
+                "provider": {
+                    "type": "python",
+                    "module": "chaosk8s.probes",
+                    "func": "all_microservices_healthy",
+                    "arguments": {
+                        "ns": "default"
+                    }
+                },
+                "tolerance": true
+            },
+	        {
+                "type": "probe",
+                "name": "Flask server responding to ping",
+                "tolerance": 200,
+                "provider": {
+                    "type": "http",
+                    "timeout": 3,
+                    "verify_tls": false,
+                    "url": "http://check.alive/books/ping"
+                }
+            }
+        ]
+    },
+    "method": [
+        {
+            "type": "action",
+            "name": "Make concurrent requests",
+            "provider": {
+                "type": "process",
+		"path": "python3",
+                "arguments": "/home/osboxes/Documents/flask-vue-kubernetes/chaostoolkit-experiments/concurent-requests.py"
+            },
+            "pauses": {
+                "after": 1
+            }
+        }
+    ]
+}

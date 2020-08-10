@@ -1,0 +1,60 @@
+{
+    "version": "1.0.0",
+    "title": "Kill a random flask pod",
+    "description": "N/A",
+    "tags": [],
+    "steady-state-hypothesis": {
+        "title": "All microservices are still healthy",
+        "probes": [
+            {
+                "type": "probe",
+                "name": "all_microservices_healthy",
+                "provider": {
+                    "type": "python",
+                    "module": "chaosk8s.probes",
+                    "func": "all_microservices_healthy",
+                    "arguments": {
+                        "ns": "default"
+                    }
+                },
+                "tolerance": true
+            },
+	        {
+                "type": "probe",
+                "name": "Flask server responding to ping",
+                "tolerance": 200,
+                "provider": {
+                    "type": "http",
+                    "timeout": 3,
+                    "verify_tls": false,
+                    "url": "http://check.alive/books/ping"
+                }
+            }
+        ]
+    },
+    "method": [
+        {
+            "type": "action",
+            "name": "terminate_pods",
+            "provider": {
+                "type": "python",
+                "module": "chaosk8s.pod.actions",
+                "func": "terminate_pods",
+                "arguments": {
+                    "label_selector": "app=flask",
+                    "name_pattern": null,
+                    "all": false,
+                    "rand": false,
+                    "mode": "fixed",
+                    "qty": 1,
+                    "grace_period": 30,
+                    "ns": "default",
+                    "order": "alphabetic"
+                }
+            },
+	    "pauses": {
+		"after": 10
+	    }
+        }
+    ]
+}
