@@ -4,28 +4,22 @@ import threading
 from threading import Thread
 from queue import Queue
 
-concurrent = 10
+CONCURRENT_REQUESTS = 9000
 
-def doWork():
-    print(f'Running work with thread id: {threading.get_ident()}')
+def make_a_request():
+    # print(f'Running work with thread id: {threading.get_ident()}')
     while True:
         url = q.get()
         ret = requests.get(url)
-        doSomethingWithResult(ret, url)
+        parse_result(ret, url)
         q.task_done()
 
-# def getStatus(ourl):
-#     try:
-#     except:
-#         return "error", ourl
+def parse_result(result, url):
+    print(result, url, result.text)
 
-def doSomethingWithResult(result, url):
-    print(result, url)
-    print(result.text)
-
-q = Queue(concurrent * 2)
-for i in range(concurrent):
-    t = Thread(target=doWork)
+q = Queue(CONCURRENT_REQUESTS * 2)
+for i in range(CONCURRENT_REQUESTS):
+    t = Thread(target=make_a_request)
     t.daemon = True
     t.start()
 try:
