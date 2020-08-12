@@ -1,6 +1,6 @@
 {
     "version": "1.0.0",
-    "title": "Concurent requests",
+    "title": "Concurrent requests",
     "description": "N/A",
     "tags": [],
     "steady-state-hypothesis": {
